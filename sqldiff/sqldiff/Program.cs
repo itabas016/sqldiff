@@ -10,12 +10,13 @@ namespace sqldiff
     {
         static void Main(string[] args)
         {
-            if (args.Length < 2)
+            /*
+            if (args != null && args.Length < 2)
             {
                 Console.WriteLine("Please input sql file full path to compare diff with the previous version...");
             }
 
-            if (args.Length == 2)
+            if (args != null && args.Length == 2)
             {
                 try
                 {
@@ -27,6 +28,21 @@ namespace sqldiff
                     throw new Exception(ex.Message);
                 }
             }
+            */
+
+            var previous = @"D:\Project\Arthor\sqldiff\ins_smp_SYSTEM_EVENT.sqlx";
+            var current = @"D:\Project\Arthor\sqldiff\ins_smp_SYSTEM_EVENT.sqlx";
+            try
+            {
+                var factory = new Factory(previous, current);
+                factory.Compare();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            Console.ReadLine();
         }
     }
 }
