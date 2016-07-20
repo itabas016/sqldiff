@@ -89,7 +89,7 @@ namespace sqldiff
                         {
                             STATE_COMMENTS.Add(item);
                         }
-                        if (lineContent.StartsWith(Const.LINE_DELETE_PREFIX))
+                        if (item.StartsWith(Const.LINE_DELETE_PREFIX))
                         {
                             STATE_DELETE = item;
                         }
@@ -106,7 +106,7 @@ namespace sqldiff
 
         private string GetInsertValue(string insertStatement)
         {
-            var currentArray = insertStatement.Split(new string[] { "(", ")", ";", }, StringSplitOptions.RemoveEmptyEntries);
+            var currentArray = insertStatement.Split(new string[] { "Insert into SYSTEM_EVENT", "Values\n" }, StringSplitOptions.RemoveEmptyEntries);
             return currentArray[currentArray.Length - 1];
         }
 
@@ -117,6 +117,7 @@ namespace sqldiff
         /// <returns></returns>
         private SystemEvent Serialize(string insertValue)
         {
+            insertValue = insertValue.TrimStart(new char[] { ' ', '(' }).TrimEnd(')');
             var collection = insertValue.Split(new string[] { ", " }, StringSplitOptions.None);
 
             var properties = new SystemEvent().GetType().GetProperties();

@@ -99,7 +99,7 @@ namespace sqldiff
 
             #region list string
 
-            if (objA.GetType() == typeof(IList<string>))
+            if (objA.GetType() == typeof(List<string>))
             {
                 var a = ((IList<string>)objA);
                 var b = ((IList<string>)objB);
@@ -122,7 +122,7 @@ namespace sqldiff
                     {
                         foreach (var item in diff)
                         {
-                            table.Add(item, null);
+                            table.Add(item, "null");
                         }
                     }
 
@@ -132,7 +132,7 @@ namespace sqldiff
                     {
                         foreach (var item in diff)
                         {
-                            table.Add(null, item);
+                            table.Add("null", item);
                         }
                     }
                 }
@@ -144,10 +144,12 @@ namespace sqldiff
 
             #region list events
 
-            if (objA.GetType() == typeof(IList<SystemEvent>))
+            if (objA.GetType() == typeof(List<SystemEvent>))
             {
                 var a = ((IList<SystemEvent>)objA);
                 var b = ((IList<SystemEvent>)objB);
+
+                var properties = new SystemEvent().GetType().GetProperties();
 
                 if (a.Count == b.Count)
                 {
@@ -156,33 +158,78 @@ namespace sqldiff
                         var instA = a[i];
                         var instB = b[i];
 
-                        var properties = new SystemEvent().GetType().GetProperties();
+                        var childtable = new Hashtable();
+                        var summaryTableKey = properties.SingleOrDefault(x => x.Name == "Name").GetValue(instA);
 
-                        var summarytable = new Hashtable();
-                        var summaryTableKey = properties.SingleOrDefault(x => x.Name == "Name").Name;
                         foreach (var property in properties)
                         {
-                            var childtable = new Hashtable();
 
-                            var valA = property.GetValue(instA);
-                            var valB = property.GetValue(instB);
+                            var valA = property.GetValue(instA).ToString();
+                            var valB = property.GetValue(instB).ToString();
                             if (valA != valB)
                             {
                                 var columntable = new Hashtable();
                                 columntable.Add(valA, valB);
-                                childtable.Add(property.Name, childtable);
+                                childtable.Add(property.Name, columntable);
                             }
-                            summarytable.Add(summaryTableKey, childtable);
                         }
-                        //table.Add("key?", summarytable);
+                        if (childtable.Count > 0)
+                        {
+                            table.Add(summaryTableKey, childtable);
+                        }
                     }
                 }
-            }
+                else
+                {
+                    //a item not in b
+                    var diff = a.Except(b);
+                    if (diff.Any())
+                    {
+                        foreach (var item in diff)
+                        {
+                            var instance = (SystemEvent)item;
+                            var childtable = new Hashtable();
+                            var summaryTableKey = properties.SingleOrDefault(x => x.Name == "Name").GetValue(instance);
 
+                            foreach (var property in properties)
+                            {
+                                var val = property.GetValue(instance).ToString();
+
+                                var columntable = new Hashtable();
+                                columntable.Add(val, "null");
+                                childtable.Add(property.Name, columntable);
+                            }
+                            table.Add(summaryTableKey, childtable);
+                        }
+                    }
+
+                    //b item not in a
+                    diff = b.Except(a);
+                    if (diff.Any())
+                    {
+                        foreach (var item in diff)
+                        {
+                            var instance = (SystemEvent)item;
+                            var childtable = new Hashtable();
+                            var summaryTableKey = properties.SingleOrDefault(x => x.Name == "Name").GetValue(instance);
+
+                            foreach (var property in properties)
+                            {
+                                var val = property.GetValue(instance).ToString();
+
+                                var columntable = new Hashtable();
+                                columntable.Add("null", val);
+                                childtable.Add(property.Name, columntable);
+                            }
+                            table.Add(summaryTableKey, childtable);
+                        }
+                    }
+                }
+                return table;
+            }
             return table;
 
             #endregion
-
         }
 
         private string ConvertEmailMessage()

@@ -3,8 +3,8 @@ exec PROC_DISABLE_TAB_CONS('SYSTEM_EVENT');
 --DO NOT Use the  TRUNCATE statement here. This table is used by the reporting materialized views and 
 --A truncate causes a FULL refresh 
 
---The events in the range 80,000- 90,000 are custom, so we don't want to delete those.
-DELETE FROM SYSTEM_EVENT where ID < 80000 or ID > 90000; 
+--The events in the range 85,000- 90,000 are custom, so we don't want to delete those.
+DELETE FROM SYSTEM_EVENT where ID < 85000 or ID > 90000; 
 
 SET DEFINE OFF;
 
@@ -105,6 +105,18 @@ Insert into SYSTEM_EVENT
     0, 1, 1, 0, 0, 
     0, 11, 0, 0, 0, 
     0, 0);
+Insert into SYSTEM_EVENT
+   (ID, NAME, SORT_KEY, DESCRIPTION, CATEGORY1, 
+    CATEGORY2, CUSTOMER_SPEAR, DEVICE_SPEAR, PRODUCT_SPEAR, INVOICE_SPEAR, 
+    ACCOUNT_SPEAR, ENABLE_REQUIRE_REASON, ENABLE_EDIT_REASON, AGREEMENT_SPEAR, SHIPPING_ORDER_SPEAR, 
+    WORK_ORDER_SPEAR, ENTITY_KEY, IS_OBSOLETE, ALLOW_FOR_LEDGER_ACCOUNT, SKIP_ON_HISTORY_SCREEN, 
+    CONTACT_SPEAR, IS_SETTLEMENT)
+ Values
+   (500219, 'Test current add new record', 'test_sort_key', 'test description blalalalal. for current version', 'H', 
+    NULL, 0, 3, 1, 0, 
+    0, 1, 1, 0, 1, 
+    0, 28, 0, 0, 0, 
+    1, 2);
 Insert into SYSTEM_EVENT
    (ID, NAME, SORT_KEY, DESCRIPTION, CATEGORY1, 
     CATEGORY2, CUSTOMER_SPEAR, DEVICE_SPEAR, PRODUCT_SPEAR, INVOICE_SPEAR, 
@@ -1397,11 +1409,11 @@ Insert into SYSTEM_EVENT
     WORK_ORDER_SPEAR, ENTITY_KEY, IS_OBSOLETE, ALLOW_FOR_LEDGER_ACCOUNT, SKIP_ON_HISTORY_SCREEN, 
     CONTACT_SPEAR, IS_SETTLEMENT)
  Values
-   (99, 'OBS Change Proxy Code on Financial Account', 'Acc  ', 'Change the proxy code on a customer''s financial account.', 'H', 
+   (99, 'OBS Change Proxy Code on Financial Account, and name change', 'Acc  ', 'Change the proxy code on a customer, update description in current version''s financial account.', 'H', 
     NULL, 0, 0, 0, 0, 
-    0, 1, 1, 0, 0, 
+    0, 1, 1, 40, 0, 
     1, NULL, 1, 0, 0, 
-    0, 0);
+    0, 10);
 Insert into SYSTEM_EVENT
    (ID, NAME, SORT_KEY, DESCRIPTION, CATEGORY1, 
     CATEGORY2, CUSTOMER_SPEAR, DEVICE_SPEAR, PRODUCT_SPEAR, INVOICE_SPEAR, 
@@ -1517,7 +1529,7 @@ Insert into SYSTEM_EVENT
     WORK_ORDER_SPEAR, ENTITY_KEY, IS_OBSOLETE, ALLOW_FOR_LEDGER_ACCOUNT, SKIP_ON_HISTORY_SCREEN, 
     CONTACT_SPEAR, IS_SETTLEMENT)
  Values
-   (110, 'Unlink Product from Device', 'sspr ', 'Remove the link between a software product and a device.', 'H', 
+   (110, 'Unlink Product from Device', 'sspr ', 'Remove the link between a software product and a device. update description in this current version', 'H', 
     NULL, 0, 0, 0, 0, 
     0, 1, 1, 0, 0, 
     0, 34, 0, 0, 0, 
