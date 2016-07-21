@@ -14,7 +14,7 @@ namespace sqldiff
         public MachineBox PreviousVersion { get; set; }
         public MachineBox CurrentVersion { get; set; }
 
-        public Dictionary<string, Hashtable> DiffDictionary = new Dictionary<string, Hashtable>();
+        public Dictionary<string, Hashtable> DiffDictionary { get; set; }
 
         #endregion
 
@@ -24,6 +24,7 @@ namespace sqldiff
         {
             PreviousVersion = new MachineBox(previousFile);
             CurrentVersion = new MachineBox(currentFile);
+            DiffDictionary = new Dictionary<string, Hashtable>();
         }
 
         #endregion
