@@ -132,7 +132,7 @@ namespace sqldiff
                     {
                         foreach (var item in diff)
                         {
-                            table.Add("null", item);
+                            table.Add(string.Format("null-{0}", item), item);
                         }
                     }
                 }
@@ -218,7 +218,7 @@ namespace sqldiff
                                 var val = property.GetValue(instance).ToString();
 
                                 var columntable = new Hashtable();
-                                columntable.Add("null", val);
+                                columntable.Add(string.Format("null-{0}", val), val);
                                 childtable.Add(property.Name, columntable);
                             }
                             table.Add(summaryTableKey, childtable);
